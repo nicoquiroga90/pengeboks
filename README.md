@@ -35,12 +35,33 @@ All services interact with Supabase (PostgreSQL + Storage).
 
 ## 📂 Folder Structure
 
-´´´bash
-pengeboks/ │ ├── api-gateway/ ├── auth-service/ ├── user-service/ ├── deposit-service/ ├── pdf-service/ ├── frontend/ └── docs/
-´´´
-
+```bash
+pengeboks/
+└── src/
+    ├── api-gateway/              # Spring Cloud Gateway
+    │   ├── src/main/java/        # Gateway logic
+    │   └── src/main/resources/   # Config files (application.yml)
+    ├── auth-service/             # Authentication (Spring Boot)
+    │   ├── src/main/java/        # Registration/login + MitID
+    │   └── src/main/resources/   # Supabase config
+    ├── user-service/             # User profiles
+    │   ├── src/main/java/        # Profile photo management
+    │   └── src/main/resources/
+    ├── deposit-service/          # Escrow deposits
+    │   ├── src/main/java/        # Transaction logic
+    │   └── src/main/resources/
+    ├── pdf-service/              # PDF generation
+    │   ├── src/main/java/        # iText/Apache PDFBox
+    │   └── src/main/resources/
+    ├── frontend/                 # React + Vite
+    │   ├── src/                  # Components/pages
+    │   └── vite.config.ts        # Vite config
+    └── docs/                     # Documentation
+        ├── api-specs/            # OpenAPI/Swagger specs
+        └── diagrams/             # Architecture diagrams
 
 ---
+```
 
 ## 🚀 Getting Started
 
