@@ -1,4 +1,4 @@
-package com.pengeboks.receipt;
+package com.pengeboks.receipt.controller;
 
 import org.springframework.web.bind.annotation.*;
 
