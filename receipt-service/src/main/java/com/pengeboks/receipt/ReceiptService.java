@@ -32,7 +32,8 @@ public class ReceiptService {
         receiptRepository.deleteById(id);
     }
 
-    public List<Receipt> getReceiptsBySender(String sender) {
-        return receiptRepository.findBySender(sender);
-    }
+   public List<Receipt> getReceiptsBySender(String fromUser) {
+    return receiptRepository.findByFromUser(fromUser);
+}
+
 }
