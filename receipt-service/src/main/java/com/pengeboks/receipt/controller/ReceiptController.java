@@ -1,7 +1,10 @@
-package com.pengeboks.receipt;
+package com.pengeboks.receipt.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import com.pengeboks.receipt.Receipt;
+import com.pengeboks.receipt.service.ReceiptService;
 
 import java.util.List;
 import java.util.Optional;

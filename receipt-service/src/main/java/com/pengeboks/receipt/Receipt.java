@@ -18,4 +18,5 @@ public class Receipt {
     private String toUser;
     private Double amount;
     private LocalDateTime createdAt = LocalDateTime.now();
+    private String fileName;
 }
