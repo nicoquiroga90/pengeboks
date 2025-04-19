@@ -3,8 +3,8 @@ package com.pengeboks.receipt.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.pengeboks.receipt.Receipt;
 import com.pengeboks.receipt.ReceiptRepository;
+import com.pengeboks.receipt.model.Receipt;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.pengeboks.receipt;
+package com.pengeboks.receipt.model;
 import jakarta.persistence.*;
 import lombok.*;
 
