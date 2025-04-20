@@ -1,42 +1,33 @@
 package com.pengeboks.receipt.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.pengeboks.receipt.ReceiptRepository;
+import com.pengeboks.receipt.dto.ReceiptRequest;
 import com.pengeboks.receipt.model.Receipt;
-
-import java.util.List;
-import java.util.Optional;
+import com.pengeboks.receipt.repository.ReceiptRepository;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ReceiptService {
 
-    private final ReceiptRepository receiptRepository;
+    private final PdfGenerator pdfGenerator;
+    private final SupabaseStorageService storageService;
+    private final ReceiptRepository repository;
 
-    @Autowired
-    public ReceiptService(ReceiptRepository receiptRepository) {
-        this.receiptRepository = receiptRepository;
+    public ReceiptService(PdfGenerator pdfGenerator, SupabaseStorageService storageService, ReceiptRepository repository) {
+        this.pdfGenerator = pdfGenerator;
+        this.storageService = storageService;
+        this.repository = repository;
     }
 
-    public Receipt saveReceipt(Receipt receipt) {
-        return receiptRepository.save(receipt);
+    public String createAndStoreReceipt(ReceiptRequest request) throws Exception {
+        byte[] pdfBytes = pdfGenerator.generate(request);
+        String fileName = "receipt-" + request.getDepositId() + ".pdf";
+        String uploadedFileName = storageService.upload(pdfBytes, fileName);
+
+        Receipt receipt = new Receipt();
+        receipt.setDepositId(request.getDepositId());
+        receipt.setFileName(uploadedFileName);
+        repository.save(receipt);
+
+        return uploadedFileName;
     }
-
-    public List<Receipt> getAllReceipts() {
-        return receiptRepository.findAll();
-    }
-
-    public Optional<Receipt> getReceiptById(Long id) {
-        return receiptRepository.findById(id);
-    }
-
-    public void deleteReceipt(Long id) {
-        receiptRepository.deleteById(id);
-    }
-
-   public List<Receipt> getReceiptsBySender(String fromUser) {
-    return receiptRepository.findByFromUser(fromUser);
-}
-
 }

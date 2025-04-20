@@ -1,7 +1,7 @@
 package com.pengeboks.receipt.model;
+
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -9,14 +9,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Receipt {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String fromUser;
-    private String toUser;
-    private Double amount;
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private String depositId;
     private String fileName;
+    private LocalDateTime createdAt = LocalDateTime.now();
 }
