@@ -1,8 +1,20 @@
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:17-jdk-alpine as builder
 
 WORKDIR /app
 
-COPY target/receipt-service-0.0.1-SNAPSHOT.jar app.jar
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+RUN ./mvnw dependency:go-offline
+
+COPY src/ src/
+
+RUN ./mvnw package -DskipTests
+
+FROM eclipse-temurin:17-jre-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app/target/receipt-service-*.jar app.jar
 
 EXPOSE 8083
 
