@@ -1,55 +1,46 @@
 package com.pengeboks.deposit.controller;
 
-import com.pengeboks.deposit.client.ReceiptClient;
-import com.pengeboks.deposit.dto.ReceiptRequest;
+import com.pengeboks.deposit.model.Deposit;
+import com.pengeboks.deposit.service.DepositService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/deposit")
+@RequestMapping("/api/deposits")
 public class DepositController {
 
-    private final ReceiptClient receiptClient;
+    private final DepositService depositService;
 
-    public DepositController(ReceiptClient receiptClient) {
-        this.receiptClient = receiptClient;
+    public DepositController(DepositService depositService) {
+        this.depositService = depositService;
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<String> createDeposit(@RequestParam String fromUser,
-                                                @RequestParam String toUser,
-                                                @RequestParam double amount,
-                                                @RequestParam(required = false) String message) {
-        // Simulate deposit creation
-        String depositId = UUID.randomUUID().toString();  // Generate a unique deposit ID
-
-        String responseMsg = String.format("Deposit of %.2f DKK from %s to %s created successfully. Deposit ID: %s",
-                amount, fromUser, toUser, depositId);
-
-        // Build request to receipt-service
-        ReceiptRequest request = new ReceiptRequest(
-                fromUser,
-                toUser,
-                amount,
-                depositId,
-                message != null ? message : ""
-        );
-
-        // Send to receipt-service
-        receiptClient.createReceipt(request);
-
-        return ResponseEntity.ok(responseMsg);
+    @PostMapping
+    public ResponseEntity<Deposit> createDeposit(@RequestBody Deposit deposit) {
+        return ResponseEntity.ok(depositService.createDeposit(deposit));
     }
 
-    @PostMapping("/release")
-    public ResponseEntity<String> releaseDeposit(@RequestParam String depositId) {
-        return ResponseEntity.ok("Deposit with ID " + depositId + " has been released.");
+    @GetMapping("/{id}")
+    public ResponseEntity<Deposit> getDepositById(@PathVariable UUID id) {
+        return ResponseEntity.ok(depositService.getDepositById(id));
     }
 
-    @GetMapping("/status")
-    public ResponseEntity<String> checkDepositStatus(@RequestParam String depositId) {
-        return ResponseEntity.ok("Deposit " + depositId + " is currently pending release.");
+    @GetMapping
+    public ResponseEntity<List<Deposit>> getAllDeposits() {
+        return ResponseEntity.ok(depositService.getAllDeposits());
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<Deposit> updateStatus(@PathVariable UUID id, @RequestParam String status) {
+        return ResponseEntity.ok(depositService.updateStatus(id, status));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteDeposit(@PathVariable UUID id) {
+        depositService.deleteDeposit(id);
+        return ResponseEntity.noContent().build();
     }
 }

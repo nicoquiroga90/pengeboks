@@ -3,7 +3,11 @@ package com.pengeboks.receipt.service;
 import com.pengeboks.receipt.dto.ReceiptRequest;
 import com.pengeboks.receipt.model.Receipt;
 import com.pengeboks.receipt.repository.ReceiptRepository;
+import com.pengeboks.receipt.service.PdfGenerator;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class ReceiptService {
@@ -20,7 +24,11 @@ public class ReceiptService {
 
     public String createAndStoreReceipt(ReceiptRequest request) throws Exception {
         byte[] pdfBytes = pdfGenerator.generate(request);
-        String fileName = "receipt-" + request.getDepositId() + ".pdf";
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HHmmss");
+        String timestamp = LocalDateTime.now().format(formatter);
+        String fileName = "receipt_" + timestamp + ".pdf";
+
         String uploadedFileName = storageService.upload(pdfBytes, fileName);
 
         Receipt receipt = new Receipt();

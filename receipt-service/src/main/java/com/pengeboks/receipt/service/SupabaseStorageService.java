@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import java.net.URI;
 import java.net.http.*;
 import java.time.Duration;
-import java.util.UUID;
 
 @Service
 public class SupabaseStorageService {
@@ -18,13 +17,11 @@ public class SupabaseStorageService {
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
     public String upload(byte[] fileBytes, String originalFilename) {
-        String uniqueFilename = UUID.randomUUID() + "-" + originalFilename;
-
         String uploadUrl = String.format(
             "%s/storage/v1/object/%s/%s",
             supabaseUrl,
             bucketName,
-            uniqueFilename
+            originalFilename
         );
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -39,7 +36,7 @@ public class SupabaseStorageService {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200 || response.statusCode() == 201) {
-                return uniqueFilename;
+                return originalFilename;
             } else {
                 throw new UploadException("Upload failed: " + response.body());
             }
