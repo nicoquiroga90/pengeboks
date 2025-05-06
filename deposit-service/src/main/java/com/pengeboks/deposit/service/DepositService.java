@@ -1,9 +1,11 @@
 package com.pengeboks.deposit.service;
 
+import com.pengeboks.deposit.dto.ReceiptRequest;
 import com.pengeboks.deposit.model.Deposit;
 import com.pengeboks.deposit.repository.DepositRepository;
 import com.pengeboks.deposit.exception.DepositNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -13,15 +15,42 @@ import java.util.UUID;
 public class DepositService {
 
     private final DepositRepository depositRepository;
+    private final RestTemplate restTemplate;
 
-    public DepositService(DepositRepository depositRepository) {
+    public DepositService(DepositRepository depositRepository, RestTemplate restTemplate) {
         this.depositRepository = depositRepository;
+        this.restTemplate = restTemplate;
     }
 
     public Deposit createDeposit(Deposit deposit) {
-deposit.setCreatedAt(OffsetDateTime.now());
+        deposit.setCreatedAt(OffsetDateTime.now());
         deposit.setStatus("PENDING");
-        return depositRepository.save(deposit);
+        Deposit savedDeposit = depositRepository.save(deposit);
+
+        // Create ReceiptRequest
+        ReceiptRequest receiptRequest = new ReceiptRequest(
+            deposit.getSenderName(),
+            deposit.getReceiverName(),
+            deposit.getAmount().doubleValue(),
+            savedDeposit.getId().toString(),
+            deposit.getMessage()
+        );
+
+        try {
+            // Call ReceiptService
+            String receiptUrl = restTemplate.postForObject(
+                "http://receipt-service:8083/api/receipts",
+                receiptRequest,
+                String.class
+            );
+            savedDeposit.setReceiptUrl(receiptUrl);
+            savedDeposit = depositRepository.save(savedDeposit);
+        } catch (Exception e) {
+            // Log error and continue (receipt generation failed, but deposit is saved)
+            System.err.println("Failed to generate receipt: " + e.getMessage());
+        }
+
+        return savedDeposit;
     }
 
     public Deposit getDepositById(UUID id) {

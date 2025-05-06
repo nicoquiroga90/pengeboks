@@ -1,6 +1,5 @@
-FROM maven:latest AS build
+FROM openjdk:17-jdk-slim
 WORKDIR /app
-COPY . .
-RUN mvn package -DskipTests
+COPY target/deposit-service.jar app.jar
 EXPOSE 8082
-CMD ["java", "-jar", "target/deposit-service-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

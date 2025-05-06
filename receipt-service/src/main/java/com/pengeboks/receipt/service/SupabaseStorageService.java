@@ -36,7 +36,7 @@ public class SupabaseStorageService {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200 || response.statusCode() == 201) {
-                return originalFilename;
+                return String.format("%s/storage/v1/object/public/%s/%s", supabaseUrl, bucketName, originalFilename);
             } else {
                 throw new UploadException("Upload failed: " + response.body());
             }

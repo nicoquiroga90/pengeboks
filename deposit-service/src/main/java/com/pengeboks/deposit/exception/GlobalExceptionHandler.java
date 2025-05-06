@@ -1,4 +1,4 @@
-package com.pengeboks.receipt.exception;
+package com.pengeboks.deposit.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UploadException.class)
-    public ResponseEntity<String> handleUploadException(UploadException ex) {
-        return ResponseEntity.status(500).body("File upload error: " + ex.getMessage());
+    @ExceptionHandler(DepositNotFoundException.class)
+    public ResponseEntity<String> handleDepositNotFound(DepositNotFoundException ex) {
+        return ResponseEntity.status(404).body(ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

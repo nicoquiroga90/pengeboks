@@ -3,7 +3,6 @@ package com.pengeboks.receipt.service;
 import com.pengeboks.receipt.dto.ReceiptRequest;
 import com.pengeboks.receipt.model.Receipt;
 import com.pengeboks.receipt.repository.ReceiptRepository;
-import com.pengeboks.receipt.service.PdfGenerator;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,13 +28,13 @@ public class ReceiptService {
         String timestamp = LocalDateTime.now().format(formatter);
         String fileName = "receipt_" + timestamp + ".pdf";
 
-        String uploadedFileName = storageService.upload(pdfBytes, fileName);
+        String uploadedFileUrl = storageService.upload(pdfBytes, fileName);
 
         Receipt receipt = new Receipt();
         receipt.setDepositId(request.getDepositId());
-        receipt.setFileName(uploadedFileName);
+        receipt.setFileName(fileName);
         repository.save(receipt);
 
-        return uploadedFileName;
+        return uploadedFileUrl;
     }
 }

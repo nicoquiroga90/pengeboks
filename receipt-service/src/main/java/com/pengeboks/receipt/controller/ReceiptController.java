@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/receipt")
+@RequestMapping("/api/receipts")
 public class ReceiptController {
 
     private final ReceiptService receiptService;
@@ -16,8 +16,9 @@ public class ReceiptController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createAndUploadReceipt(@RequestBody ReceiptRequest request) throws Exception {
-        String fileUrl = receiptService.createAndStoreReceipt(request);
-        return ResponseEntity.ok(fileUrl);
+    public ResponseEntity<String> createReceipt(@RequestBody ReceiptRequest request) throws Exception {
+        // TODO: Add authentication (e.g., Supabase Auth JWT validation)
+        String receiptUrl = receiptService.createAndStoreReceipt(request);
+        return ResponseEntity.ok(receiptUrl);
     }
 }
